@@ -15,24 +15,15 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a1a;font-size
 body.dark{background:#080a0f;color:#e8edf5}
 .go{position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:0}
 .go.run{animation:grun .7s steps(1) forwards}
-@keyframes grun{
-  0%{opacity:0}8%{opacity:.18;background:#0f0;clip-path:inset(20% 0 55% 0)}
-  16%{opacity:.1;background:#f0f;clip-path:inset(55% 0 8% 0)}24%{opacity:.22;background:#0ff;clip-path:inset(8% 0 75% 0)}
-  32%{opacity:.08;background:#0f0;clip-path:inset(72% 0 3% 0)}40%{opacity:.2;background:#f00;clip-path:inset(35% 0 38% 0)}
-  48%{opacity:.06;background:#0f0;clip-path:inset(12% 0 65% 0)}56%{opacity:.14;background:#f0f;clip-path:inset(62% 0 12% 0)}
-  64%{opacity:.05;background:#0ff}72%{opacity:.11;background:#0f0;clip-path:inset(42% 0 28% 0)}
-  80%{opacity:.04;background:#f0f}100%{opacity:0}
-}
+@keyframes grun{0%{opacity:0}8%{opacity:.18;background:#0f0;clip-path:inset(20% 0 55% 0)}16%{opacity:.1;background:#f0f;clip-path:inset(55% 0 8% 0)}24%{opacity:.22;background:#0ff;clip-path:inset(8% 0 75% 0)}32%{opacity:.08;background:#0f0;clip-path:inset(72% 0 3% 0)}40%{opacity:.2;background:#f00;clip-path:inset(35% 0 38% 0)}48%{opacity:.06;background:#0f0;clip-path:inset(12% 0 65% 0)}56%{opacity:.14;background:#f0f;clip-path:inset(62% 0 12% 0)}64%{opacity:.05;background:#0ff}72%{opacity:.11;background:#0f0;clip-path:inset(42% 0 28% 0)}80%{opacity:.04;background:#f0f}100%{opacity:0}}
 .scanlines{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.1) 2px,rgba(0,0,0,.1) 4px);transition:opacity var(--t)}
 body.dark .scanlines{opacity:1}
 .gridbg{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0;background-image:linear-gradient(rgba(201,168,76,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.04) 1px,transparent 1px);background-size:50px 50px;transition:opacity var(--t)}
-body.dark .gridbg{opacity:0}
+body.dark .gridbg{opacity:1}
 .orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;opacity:0;transition:opacity 1s ease}
 .orb1{width:500px;height:500px;background:rgba(201,168,76,.12);top:-100px;right:-100px}
 .orb2{width:400px;height:400px;background:rgba(30,60,120,.18);bottom:20%;left:-100px}
 body.dark .orb{opacity:1}
-#topo{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity 1s ease}
-body.dark #topo{opacity:1}
 .cur,.curR{display:none;position:fixed;pointer-events:none;z-index:9000;border-radius:50%;transition:transform .15s ease}
 body.dark .cur{display:block;width:7px;height:7px;background:#c9a84c;mix-blend-mode:screen}
 .tbtn{position:fixed;top:1.15rem;right:2rem;z-index:200;display:flex;align-items:center;gap:.45rem;padding:.45rem 1rem;border-radius:2px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;cursor:pointer;border:1.5px solid #1a1a1a;background:transparent;color:#1a1a1a;transition:all .3s}
@@ -151,6 +142,11 @@ body.dark .tt{color:#3a4555;background:#141820;border-color:#1e2530}
 .pl:hover{color:#1a1a1a;border-color:#1a1a1a}
 body.dark .pl{color:#7a8599;border-color:#1e2530}
 body.dark .pl:hover{color:#c9a84c;border-color:#c9a84c}
+/* feature grid for megabox */
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem .8rem;margin-bottom:1.1rem}
+.feat-item{font-size:12px;color:#666;display:flex;gap:.4rem;align-items:flex-start;transition:color .3s}
+body.dark .feat-item{color:#7a8599}
+.feat-dot{color:#c9a84c;flex-shrink:0}
 .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
 .ctext p{font-size:15px;color:#666;line-height:1.85;margin-bottom:1.25rem;transition:color .3s}
 body.dark .ctext p{color:#7a8599}
@@ -177,11 +173,16 @@ body.dark ::-webkit-scrollbar{width:3px}
 body.dark ::-webkit-scrollbar-track{background:#080a0f}
 body.dark ::-webkit-scrollbar-thumb{background:#2a3340}
 @media(max-width:768px){
-  nav{padding:1rem 1.25rem}.nlinks{display:none;margin-right:0}
-  .hero{padding:7rem 1.25rem 3rem}.si{padding:3.5rem 1.25rem}
-  .agrid,.cgrid{grid-template-columns:1fr;gap:2rem}.pc{grid-template-columns:1fr}
+  nav{padding:1rem 1.25rem}
+  .nlinks{display:none;margin-right:0}
+  .hero{padding:7rem 1.25rem 3rem}
+  .si{padding:3.5rem 1.25rem}
+  .agrid,.cgrid{grid-template-columns:1fr;gap:2rem}
+  .pc{grid-template-columns:1fr}
+  .feat-grid{grid-template-columns:1fr}
   footer{padding:1.25rem;flex-direction:column;gap:.5rem;text-align:center}
-  .tbtn{top:1rem;right:1.25rem}.cur{display:none!important}
+  .tbtn{top:1rem;right:1.25rem}
+  .cur,.curR{display:none!important}
 }
 </style>
 </head>
@@ -191,141 +192,40 @@ body.dark ::-webkit-scrollbar-thumb{background:#2a3340}
 <div class="gridbg"></div>
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
-<canvas id="topo"></canvas>
 <div class="cur" id="cur"></div>
-
+<div class="curR" id="curR"></div>
 <button class="tbtn" onclick="toggle()">
   <span class="tdot"></span>
   <span id="tl">TRANSFORM</span>
 </button>
-
 <nav id="nav">
   <a href="#" class="nlogo">S<span class="ng">.</span>Sharma</a>
   <ul class="nlinks">
-    <li><a href="#projects">Projects</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
-
 <section style="position:relative;z-index:2">
   <div class="hero">
     <div class="htag">Available for opportunities</div>
     <h1 class="hname">Saurabh<br/><span class="acc">Sharma.</span></h1>
     <p class="hrole">AI & Full Stack Developer</p>
-    <p class="hdesc">Hi, I'm Saurabh — a <em>B.Tech student</em> and developer who loves turning ideas into real, working software. I build AI systems, web applications and machine learning models that <em>actually solve problems.</em></p>
+    <p class="hdesc">I build <em>intelligent systems</em> that think, remember and act. From autonomous AI agents to machine learning models — I create software that <em>solves real problems.</em></p>
     <div class="hcta">
       <a href="#projects" class="bp">View My Work →</a>
       <a href="#contact" class="bs">Get In Touch</a>
     </div>
   </div>
 </section>
-
 <div class="div"></div>
-
-<!-- PROJECTS -->
-<section id="projects"><div class="si">
-  <div class="slabel rv">Projects</div>
-  <h2 class="stitle rv">Things I've built.</h2>
-  <div class="pgrid">
-
-    <!-- 01 MegaBox -->
-    <div class="pc feat rv">
-      <div>
-        <div class="ptop"><span class="pnum">01</span><span class="badge bai">AI Agent</span><span class="badge bf">Featured</span></div>
-        <div class="ptitle">MegaBox AI Assistant</div>
-        <div class="pdesc">A fully local, autonomous AI agent — not just a chatbot. Routes between Llama3 and Qwen2.5, manages events, learns user preferences, builds confidence-scored beliefs, and evolves its own internal state. Zero cloud dependency.</div>
-        <div class="ptech"><span class="tt">Python</span><span class="tt">Ollama</span><span class="tt">Llama3</span><span class="tt">Qwen2.5</span><span class="tt">AI Agents</span><span class="tt">Local LLM</span></div>
-      </div>
-      <div style="margin-top:1.2rem">
-        <a href="https://github.com/saurabhsharma1122/megabox-ai-assistant" target="_blank" class="pl">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          View on GitHub
-        </a>
-      </div>
-    </div>
-
-    <!-- 02 BriefGen — NEW -->
-    <div class="pc rv">
-      <div>
-        <div class="ptop"><span class="pnum">02</span><span class="badge bl">Live</span><span class="badge bai">AI Powered</span></div>
-        <div class="ptitle">BriefGen</div>
-        <div class="pdesc">AI-powered client brief form generator for freelancers and developers. Describe your role, AI builds a custom brief form, you share it with your client as a standalone HTML file. Client fills it, downloads a PDF, and sends it back. Zero friction onboarding.</div>
-        <div class="ptech"><span class="tt">HTML/CSS/JS</span><span class="tt">OpenRouter AI</span><span class="tt">Vercel</span><span class="tt">jsPDF</span><span class="tt">Serverless</span></div>
-      </div>
-      <div class="plinks">
-        <a href="https://briefgen-blue.vercel.app/" target="_blank" class="pl">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          Live Site
-        </a>
-      </div>
-    </div>
-
-    <!-- 03 Bureaucracy GPS -->
-    <div class="pc rv">
-      <div>
-        <div class="ptop"><span class="pnum">03</span><span class="badge bl">Live</span><span class="badge bai">AI Powered</span></div>
-        <div class="ptitle">Bureaucracy GPS</div>
-        <div class="pdesc">Free AI web app generating step-by-step government process guides in plain language. Hindi & English support, official links, WhatsApp sharing. Built and deployed in one day.</div>
-        <div class="ptech"><span class="tt">React</span><span class="tt">OpenRouter AI</span><span class="tt">Vercel</span><span class="tt">Hindi/English</span></div>
-      </div>
-      <div class="plinks">
-        <a href="https://project-6m9qg-aozfk8w1v-saurabhsharma1122s-projects.vercel.app/" target="_blank" class="pl">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          Live Site
-        </a>
-        <a href="https://github.com/saurabhsharma1122/bureaucracy-gps" target="_blank" class="pl">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          GitHub
-        </a>
-      </div>
-    </div>
-
-    <!-- 04 Diabetes -->
-    <div class="pc rv">
-      <div>
-        <div class="ptop"><span class="pnum">04</span><span class="badge br">Research</span><span class="badge bai">ML</span></div>
-        <div class="ptitle">Early Diabetes Detection</div>
-        <div class="pdesc">ML research project on early-stage diabetes prediction using multiple algorithms. Improved accuracy through data preprocessing, feature engineering and algorithm comparison.</div>
-        <div class="ptech"><span class="tt">Python</span><span class="tt">Machine Learning</span><span class="tt">Data Processing</span><span class="tt">Research</span></div>
-      </div>
-      <div class="plinks">
-        <a href="https://github.com/saurabhsharma1122/diabetes-ml-research" target="_blank" class="pl">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          GitHub
-        </a>
-      </div>
-    </div>
-
-    <!-- 05 FreshMart -->
-    <div class="pc rv">
-      <div>
-        <div class="ptop"><span class="pnum">05</span><span class="badge bw">Web</span></div>
-        <div class="ptitle">FreshMart</div>
-        <div class="pdesc">Frontend web project demonstrating product layout design, UI structure and responsive interface concepts.</div>
-        <div class="ptech"><span class="tt">HTML</span><span class="tt">CSS</span><span class="tt">Frontend</span></div>
-      </div>
-      <div class="plinks">
-        <a href="https://github.com/saurabhsharma1122/freshmart" target="_blank" class="pl">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          GitHub
-        </a>
-      </div>
-    </div>
-
-  </div>
-</div></section>
-
-<div class="div"></div>
-
-<!-- ABOUT -->
 <section id="about"><div class="si">
   <div class="slabel rv">About</div>
   <h2 class="stitle rv">The person<br/>behind the code.</h2>
   <div class="agrid">
     <div class="atext rv">
-      <p>I'm a <strong>B.Tech student in AI & Data Science</strong> at Priyadarshini College of Engineering — building things that go far beyond college assignments.</p>
+      <p>I'm a <strong>3rd year AI & Data Science student</strong> at Priyadarshini College of Engineering — building things that go far beyond college assignments.</p>
       <p>My work spans <strong>autonomous AI agents</strong>, machine learning research, and full-stack web applications. I'm drawn to problems that haven't been solved well yet — and I build until they are.</p>
       <p><em>"Every time I ship something, I feel like I've discovered a new version of myself — and it pushes me to go even bigger."</em></p>
     </div>
@@ -349,10 +249,7 @@ body.dark ::-webkit-scrollbar-thumb{background:#2a3340}
     </div>
   </div>
 </div></section>
-
 <div class="div"></div>
-
-<!-- SKILLS -->
 <section id="skills"><div class="si">
   <div class="slabel rv">Skills</div>
   <h2 class="stitle rv">What I work with.</h2>
@@ -365,10 +262,92 @@ body.dark ::-webkit-scrollbar-thumb{background:#2a3340}
     <div class="sc rv"><div class="sico"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div class="sname">Automation</div><div class="slev">Task Automation · System Control · Scripting</div></div>
   </div>
 </div></section>
-
 <div class="div"></div>
+<section id="projects"><div class="si">
+  <div class="slabel rv">Projects</div>
+  <h2 class="stitle rv">Things I've built.</h2>
+  <div class="pgrid">
 
-<!-- CONTACT -->
+    <div class="pc feat rv">
+      <div>
+        <div class="ptop"><span class="pnum">01</span><span class="badge bai">AI Agent</span><span class="badge bf">Featured</span></div>
+        <div class="ptitle">MegaBox — Autonomous AI Mind</div>
+        <div class="pdesc">Not a chatbot. MegaBox is a fully local autonomous AI with a real-time emotional state, camera-based vision, face recognition, voice interaction, and a live neural dashboard. It thinks, observes, remembers, and forms genuine opinions. Routes between Llama3, Qwen2.5-Coder and LLaVA:7b depending on context. Knows who it's talking to via face recognition, reacts when you disappear from camera, and speaks with emotion-matched animations. Zero cloud dependency — everything runs on your machine.</div>
+        <div class="slabel" style="margin:1rem 0 .6rem">Key Features</div>
+        <div class="feat-grid">
+          <div class="feat-item"><span class="feat-dot">◈</span>Emotional self-state (mood, energy, curiosity, focus)</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>LLaVA:7b vision — reacts intelligently to what it sees</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>Face recognition — knows who is in frame</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>Emotion-aware character animations on dashboard</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>Voice I/O with smart name recognition</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>Internal thinking system with self-reflection</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>Identity defense — reacts when called a chatbot</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>Real-time neural interface dashboard</div>
+        </div>
+        <div class="ptech">
+          <span class="tt">Python</span><span class="tt">Ollama</span><span class="tt">Llama3</span><span class="tt">LLaVA:7b</span><span class="tt">Qwen2.5-Coder</span><span class="tt">OpenCV</span><span class="tt">Face Recognition</span><span class="tt">Flask</span><span class="tt">pyttsx3</span><span class="tt">SpeechRecognition</span><span class="tt">Tkinter</span><span class="tt">Local LLM</span>
+        </div>
+      </div>
+      <div style="margin-top:1.2rem">
+        <a href="https://github.com/saurabhsharma1122/megabox-ai-assistant" target="_blank" class="pl">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+    </div>
+
+    <div class="pc rv">
+      <div>
+        <div class="ptop"><span class="pnum">02</span><span class="badge bl">Live</span><span class="badge bai">AI Powered</span></div>
+        <div class="ptitle">Bureaucracy GPS</div>
+        <div class="pdesc">Free AI web app generating step-by-step government process guides in plain language. Hindi & English support, official links, WhatsApp sharing. Built and deployed in one day.</div>
+        <div class="ptech"><span class="tt">React</span><span class="tt">OpenRouter AI</span><span class="tt">Vercel</span><span class="tt">Hindi/English</span></div>
+      </div>
+      <div class="plinks">
+        <a href="https://project-6m9qg-aozfk8w1v-saurabhsharma1122s-projects.vercel.app/" target="_blank" class="pl">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Live Site
+        </a>
+        <a href="https://github.com/saurabhsharma1122/bureaucracy-gps" target="_blank" class="pl">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <div class="pc rv">
+      <div>
+        <div class="ptop"><span class="pnum">03</span><span class="badge br">Research</span><span class="badge bai">ML</span></div>
+        <div class="ptitle">Early Diabetes Detection</div>
+        <div class="pdesc">ML research project on early-stage diabetes prediction using multiple algorithms. Improved accuracy through data preprocessing, feature engineering and algorithm comparison.</div>
+        <div class="ptech"><span class="tt">Python</span><span class="tt">Machine Learning</span><span class="tt">Data Processing</span><span class="tt">Research</span></div>
+      </div>
+      <div class="plinks">
+        <a href="https://github.com/saurabhsharma1122/diabetes-ml-research" target="_blank" class="pl">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <div class="pc rv">
+      <div>
+        <div class="ptop"><span class="pnum">04</span><span class="badge bw">Web</span></div>
+        <div class="ptitle">FreshMart</div>
+        <div class="pdesc">Frontend web project demonstrating product layout design, UI structure and responsive interface concepts.</div>
+        <div class="ptech"><span class="tt">HTML</span><span class="tt">CSS</span><span class="tt">Frontend</span></div>
+      </div>
+      <div class="plinks">
+        <a href="https://github.com/saurabhsharma1122/freshmart" target="_blank" class="pl">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div></section>
+<div class="div"></div>
 <section id="contact"><div class="si">
   <div class="slabel rv">Contact</div>
   <h2 class="stitle rv">Let's build<br/>something together.</h2>
@@ -393,15 +372,12 @@ body.dark ::-webkit-scrollbar-thumb{background:#2a3340}
     </div>
   </div>
 </div></section>
-
 <footer>
   <div class="fl">© 2025 <span>Saurabh Sharma</span>. All rights reserved.</div>
   <div class="fr">AI & Full Stack Developer</div>
 </footer>
-
 <script>
 let dark = false
-
 function toggle() {
   const go = document.getElementById('go')
   go.classList.remove('run')
@@ -417,11 +393,9 @@ function toggle() {
     })
   }, 280)
 }
-
 window.addEventListener('scroll', () => {
   document.getElementById('nav').classList.toggle('sc', scrollY > 50)
 })
-
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target) }
@@ -431,42 +405,19 @@ document.querySelectorAll('.rv').forEach((el, i) => {
   el.style.transitionDelay = (i % 4) * .1 + 's'
   obs.observe(el)
 })
-
 const cur = document.getElementById('cur')
-let mx = 0, my = 0
+const curR = document.getElementById('curR')
+let mx = 0, my = 0, rx = 0, ry = 0
 document.addEventListener('mousemove', e => {
   mx = e.clientX; my = e.clientY
   cur.style.left = mx - 3.5 + 'px'
   cur.style.top = my - 3.5 + 'px'
 })
-
-const tc = document.getElementById('topo')
-const tx = tc.getContext('2d')
-function resizeTopo() { tc.width = window.innerWidth; tc.height = window.innerHeight }
-resizeTopo()
-window.addEventListener('resize', resizeTopo)
-let tt = 0
-function drawTopo() {
-  tx.clearRect(0, 0, tc.width, tc.height)
-  const lines = 16
-  for (let i = 0; i < lines; i++) {
-    tx.beginPath()
-    for (let x = 0; x <= tc.width; x += 3) {
-      const y = tc.height * .5
-        + (Math.sin(x * .008 + tt + i * .6) * 65)
-        + (Math.sin(x * .015 - tt * .8 + i * 1.2) * 32)
-        + (Math.sin(x * .003 + tt * .4 + i * .3) * 42)
-        + (i * tc.height / lines) - (lines * tc.height / lines / 2)
-      x === 0 ? tx.moveTo(x, y) : tx.lineTo(x, y)
-    }
-    tx.strokeStyle = `rgba(201,168,76,${.05 - i * .002})`
-    tx.lineWidth = .8
-    tx.stroke()
-  }
-  tt += .004
-  requestAnimationFrame(drawTopo)
-}
-drawTopo()
+;(function anim() {
+  rx += (mx - rx) * .12; ry += (my - ry) * .12
+  curR.style.left = rx - 14 + 'px'; curR.style.top = ry - 14 + 'px'
+  requestAnimationFrame(anim)
+})()
 </script>
 </body>
 </html>
