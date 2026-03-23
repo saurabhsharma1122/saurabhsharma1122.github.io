@@ -222,12 +222,12 @@ body.dark ::-webkit-scrollbar-thumb{background:#2a3340}
 
 <div class="div"></div>
 
-<!-- PROJECTS FIRST -->
 <section id="projects"><div class="si">
   <div class="slabel rv">Projects</div>
   <h2 class="stitle rv">Things I've built.</h2>
   <div class="pgrid">
 
+    <!-- ═══════ 01 — MEGABOX ═══════ -->
     <div class="pc feat rv">
       <div>
         <div class="ptop"><span class="pnum">01</span><span class="badge bai">AI Agent</span><span class="badge bf">Featured</span></div>
@@ -256,9 +256,55 @@ body.dark ::-webkit-scrollbar-thumb{background:#2a3340}
       </div>
     </div>
 
+    <!-- ═══════ 02 — MOMENTUM ═══════ -->
+    <div class="pc feat rv">
+      <div>
+        <div class="ptop"><span class="pnum">02</span><span class="badge bl">Live</span><span class="badge bw">Full Stack</span><span class="badge bf">SaaS</span></div>
+        <div class="ptitle">Momentum — Daily Life Tracker</div>
+        <div class="pdesc">A fully functional SaaS productivity app built from scratch — habits, focus timer, journal, mood tracking and goals in one offline-ready web app. Includes a complete subscription system with UPI paywall, email OTP verification, Firebase authentication, real-time Firestore sync across devices and a freemium model that locks premium features after a 7-day trial. Deployed on Vercel and installable as a PWA on mobile.</div>
+        <div class="slabel" style="margin:1rem 0 .6rem">What I built</div>
+        <div class="feat-grid">
+          <div class="feat-item"><span class="feat-dot">◈</span>Email OTP signup with EmailJS — real verification flow</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>Firebase Auth + Firestore — user data synced across devices</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>UPI paywall with Google Form payment verification</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>Freemium model — trial, soft locks, loss-fear psychology</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>Habits tracker, Pomodoro timer, mood & sleep logging</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>90-day heatmap, streak counter, daily score ring</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>Offline-first with IndexedDB persistence</div>
+          <div class="feat-item"><span class="feat-dot">◈</span>Auto subscription expiry — isPaid flag in Firestore</div>
+        </div>
+        <div class="ptech">
+          <span class="tt">HTML</span><span class="tt">CSS</span><span class="tt">JavaScript</span><span class="tt">Firebase Auth</span><span class="tt">Firestore</span><span class="tt">EmailJS</span><span class="tt">Vercel</span><span class="tt">PWA</span><span class="tt">UPI Payments</span>
+        </div>
+      </div>
+      <div style="margin-top:1.2rem;display:flex;flex-direction:column;gap:.4rem">
+        <a href="https://momentum-tawny-nine.vercel.app" target="_blank" class="pl">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Live Demo
+        </a>
+      </div>
+    </div>
+
+    <!-- ═══════ 03 — BRIEFGEN ═══════ -->
     <div class="pc rv">
       <div>
-        <div class="ptop"><span class="pnum">02</span><span class="badge bl">Live</span><span class="badge bai">AI Powered</span></div>
+        <div class="ptop"><span class="pnum">03</span><span class="badge bl">Live</span><span class="badge bai">AI Tool</span></div>
+        <div class="ptitle">BriefGen</div>
+        <div class="pdesc">AI-powered client brief generator for freelancers. Describe your role, AI builds a custom intake form with smart relevant fields. Client opens it in any browser, fills it out, and downloads a clean PDF brief — no login, no server, works completely offline.</div>
+        <div class="ptech"><span class="tt">AI</span><span class="tt">HTML</span><span class="tt">Vercel</span><span class="tt">PDF Export</span><span class="tt">Offline-First</span></div>
+      </div>
+      <div class="plinks">
+        <a href="https://briefgen-pi.vercel.app/" target="_blank" class="pl">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Live Site
+        </a>
+      </div>
+    </div>
+
+    <!-- ═══════ 04 — BUREAUCRACY GPS ═══════ -->
+    <div class="pc rv">
+      <div>
+        <div class="ptop"><span class="pnum">04</span><span class="badge bl">Live</span><span class="badge bai">AI Powered</span></div>
         <div class="ptitle">Bureaucracy GPS</div>
         <div class="pdesc">Free AI web app generating step-by-step government process guides in plain language. Hindi & English support, official links, WhatsApp sharing. Built and deployed in one day.</div>
         <div class="ptech"><span class="tt">React</span><span class="tt">OpenRouter AI</span><span class="tt">Vercel</span><span class="tt">Hindi/English</span></div>
@@ -275,9 +321,10 @@ body.dark ::-webkit-scrollbar-thumb{background:#2a3340}
       </div>
     </div>
 
+    <!-- ═══════ 05 — DIABETES ═══════ -->
     <div class="pc rv">
       <div>
-        <div class="ptop"><span class="pnum">03</span><span class="badge br">Research</span><span class="badge bai">ML</span></div>
+        <div class="ptop"><span class="pnum">05</span><span class="badge br">Research</span><span class="badge bai">ML</span></div>
         <div class="ptitle">Early Diabetes Detection</div>
         <div class="pdesc">ML research project on early-stage diabetes prediction using multiple algorithms. Improved accuracy through data preprocessing, feature engineering and algorithm comparison.</div>
         <div class="ptech"><span class="tt">Python</span><span class="tt">Machine Learning</span><span class="tt">Data Processing</span><span class="tt">Research</span></div>
@@ -290,24 +337,10 @@ body.dark ::-webkit-scrollbar-thumb{background:#2a3340}
       </div>
     </div>
 
+    <!-- ═══════ 06 — FRESHMART ═══════ -->
     <div class="pc rv">
       <div>
-        <div class="ptop"><span class="pnum">04</span><span class="badge bl">Live</span><span class="badge bai">AI Tool</span></div>
-        <div class="ptitle">BriefGen</div>
-        <div class="pdesc">AI-powered client brief generator for freelancers. Describe your role, AI builds a custom intake form with smart relevant fields. Client opens it in any browser, fills it out, and downloads a clean PDF brief — no login, no server, works completely offline.</div>
-        <div class="ptech"><span class="tt">AI</span><span class="tt">HTML</span><span class="tt">Vercel</span><span class="tt">PDF Export</span><span class="tt">Offline-First</span></div>
-      </div>
-      <div class="plinks">
-        <a href=https://briefgen-pi.vercel.app/" target="_blank" class="pl">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          Live Site
-        </a>
-      </div>
-    </div>
-
-    <div class="pc rv">
-      <div>
-        <div class="ptop"><span class="pnum">05</span><span class="badge bw">Web</span></div>
+        <div class="ptop"><span class="pnum">06</span><span class="badge bw">Web</span></div>
         <div class="ptitle">FreshMart</div>
         <div class="pdesc">Frontend web project demonstrating product layout design, UI structure and responsive interface concepts.</div>
         <div class="ptech"><span class="tt">HTML</span><span class="tt">CSS</span><span class="tt">Frontend</span></div>
