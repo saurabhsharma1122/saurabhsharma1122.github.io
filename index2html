@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saurabh Sharma — Developer</title>
+<style>
+:root{
+  --acc:#e05500;
+  --acc2:#ff6a1a;
+  --gold:#f0a820;
+  --bg:#07080c;
+  --surf:#0c0e15;
+  --surf2:#101420;
+  --border:#181e2c;
+  --border2:#222a3c;
+  --text:#cec8bc;
+  --sub:#50607a;
+  --muted:#3a4858;
+  --dim:#1e2838;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+/* =============================================
+   PLAIN MODE
+   ============================================= */
+body{
+  font-family:Georgia,'Times New Roman',serif;
+  background:#fff;color:#111;font-size:18px;
+  line-height:1.8;max-width:680px;
+  margin:0 auto;padding:60px 24px 120px;
+}
+h1{font-size:2.4rem;font-weight:normal;letter-spacing:-0.01em;margin-bottom:0.2rem}
+h2{
+  font-family:'Courier New',monospace;font-size:0.72rem;
+  font-weight:bold;text-transform:uppercase;letter-spacing:0.15em;
+  margin:2.8rem 0 0.8rem;color:#111;
+}
+h3{font-size:1.05rem;font-weight:bold;margin:1.4rem 0 0.2rem}
+p{margin-bottom:0.8rem}
+hr{border:none;border-top:1px solid #ccc;margin:2.5rem 0}
+a{color:#000;text-decoration:underline}
+a:hover{color:#555}
+ul{padding-left:1.4rem;margin-bottom:0.8rem}
+li{margin-bottom:0.25rem}
+em{font-style:italic}
+.sub{font-style:italic;color:#555;font-size:1.05rem;margin-bottom:1.4rem}
+.meta{font-family:'Courier New',monospace;font-size:0.75rem;color:#999;margin-bottom:0.25rem}
+.stack{font-family:'Courier New',monospace;font-size:0.75rem;color:#888;margin-top:0.25rem}
+.plain-photo{float:right;width:120px;height:148px;object-fit:cover;object-position:center top;margin:0 0 1.2rem 2rem;filter:grayscale(100%);display:none}
+.plain-photo.loaded{display:block}
+
+/* Plain mode action links */
+.plain-ctas{
+  display:flex;gap:0.8rem;flex-wrap:wrap;
+  margin-bottom:1.8rem;
+  font-family:'Courier New',monospace;font-size:0.75rem;
+}
+.plain-ctas a{
+  color:#111;text-decoration:none;
+  border:1px solid #bbb;padding:5px 13px;
+  transition:background 0.15s,border-color 0.15s;
+}
+.plain-ctas a:hover{background:#f4f4f4;border-color:#888}
+
+/* =============================================
+   TRANSFORM BUTTON
+   ============================================= */
+#xbtn{
+  position:fixed;bottom:28px;right:28px;
+  background:#111;color:#fff;
+  border:none;padding:11px 22px;
+  font-family:'Courier New',monospace;
+  font-size:0.72rem;letter-spacing:0.13em;
+  cursor:pointer;z-index:9999;
+  transition:background 0.2s;
+}
+#xbtn:hover{background:#333}
+body.xmode #xbtn{
+  background:transparent;color:var(--acc2);
+  border:1px solid rgba(224,85,0,0.4);
+}
+body.xmode #xbtn:hover{background:rgba(224,85,0,0.1);color:#fff}
+
+/* =============================================
+   SHUTTER / TRANSFORMER ANIMATION
+   ============================================= */
+#shutter-overlay{
+  position:fixed;inset:0;z-index:9200;
+  pointer-events:none;display:none;overflow:hidden;
+}
+#shutter-overlay.active{display:block;pointer-events:all}
+
+.s-strip{
+  position:absolute;left:0;width:100%;overflow:hidden;
+}
+.s-strip.odd{
+  transform:translateX(-102%);
+  transition:transform 0.22s cubic-bezier(0.55,0.05,0.2,0.98);
+}
+.s-strip.even{
+  transform:translateX(102%);
+  transition:transform 0.22s cubic-bezier(0.55,0.05,0.2,0.98);
+}
+.s-strip.in{transform:translateX(0)!important}
+.s-strip.out.odd{
+  transform:translateX(102%)!important;
+  transition:transform 0.18s cubic-bezier(0.4,0,0.6,1)!important;
+}
+.s-strip.out.even{
+  transform:translateX(-102%)!important;
+  transition:transform 0.18s cubic-bezier(0.4,0,0.6,1)!important;
+}
+
+/* Leading edge glow on each panel */
+.s-edge{
+  position:absolute;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,transparent 0%,var(--acc) 30%,var(--gold) 50%,var(--acc) 70%,transparent 100%);
+  opacity:0;transition:opacity 0.05s;
+  box-shadow:0 0 12px var(--acc),0 0 4px var(--gold);
+}
+.s-strip.odd .s-edge{right:0}
+.s-strip.even .s-edge{left:0}
+.s-strip.in .s-edge{opacity:1}
+
+/* Scan lines texture on panels */
+.s-lines{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    0deg,
+    rgba(0,0,0,0.35) 0px,rgba(0,0,0,0.35) 1px,
+    transparent 1px,transparent 3px
+  );
+  pointer-events:none;
+}
+
+/* The big flash */
+#shutter-flash{
+  position:fixed;inset:0;z-index:9600;pointer-events:none;
+  background:radial-gradient(ellipse at center,
+    rgba(255,140,40,0.92) 0%,
+    rgba(224,85,0,0.7) 25%,
+    rgba(224,85,0,0.2) 55%,
+    transparent 75%
+  );
+  opacity:0;transition:opacity 0.08s;
+}
+#shutter-flash.on{opacity:1}
+#shutter-flash.off{opacity:0;transition:opacity 0.25s}
+
+/* Sparks */
+.s-spark{
+  position:fixed;z-index:9700;pointer-events:none;
+  border-radius:50%;
+}
+@keyframes spark-out{
+  0%{opacity:1;transform:scale(1) translate(0,0)}
+  100%{opacity:0;transform:scale(0) translate(var(--tx),var(--ty))}
+}
+
+/* Page glitch before shutters */
+@keyframes page-glitch{
+  0%{filter:none;transform:none}
+  10%{filter:hue-rotate(60deg) saturate(5) brightness(1.4);transform:translate(3px,-2px) skewX(1deg)}
+  25%{filter:invert(0.15) hue-rotate(140deg);transform:translate(-3px,1px)}
+  40%{filter:saturate(8) hue-rotate(200deg) brightness(1.2);transform:translate(2px,3px)}
+  55%{filter:none;transform:translate(-2px,-1px)}
+  70%{filter:hue-rotate(300deg) brightness(1.6);transform:translate(1px,-3px) skewX(-0.5deg)}
+  85%{filter:contrast(2) saturate(0);transform:translate(-1px,2px)}
+  100%{filter:none;transform:none}
+}
+body.glitching #plain-wrap,
+body.glitching #xmode-wrap{
+  animation:page-glitch 0.32s steps(1) forwards;
+}
+
+/* =============================================
+   MODE SWITCH
+   ============================================= */
+.plain-only{display:block}
+.xmode-only{display:none}
+body.xmode .plain-only{display:none}
+body.xmode .xmode-only{display:block}
+
+body.xmode{
+  font-family:'Courier New',Courier,monospace;
+  background:var(--bg);
+  color:var(--text);
+  max-width:100%;margin:0;padding:0;
+  font-size:14px;line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* =============================================
+   XMODE BACKGROUND — Industrial diagonal stripes
+   + warm glow blobs. No grid. Not AI.
+   ============================================= */
+.x-bg{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  opacity:0;transition:opacity 1.4s;
+}
+.x-bg-stripes{
+  position:absolute;inset:0;
+  background-image:repeating-linear-gradient(
+    -52deg,
+    transparent 0px,transparent 34px,
+    rgba(224,85,0,0.018) 34px,rgba(224,85,0,0.018) 35px
+  );
+}
+.x-bg-glow{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 700px 500px at 5% 25%,rgba(224,85,0,0.07) 0%,transparent 65%),
+    radial-gradient(ellipse 500px 400px at 95% 75%,rgba(240,168,32,0.05) 0%,transparent 60%),
+    radial-gradient(ellipse 300px 300px at 50% 50%,rgba(224,85,0,0.025) 0%,transparent 70%);
+}
+body.xmode .x-bg{opacity:1}
+
+/* =============================================
+   XMODE NAV
+   ============================================= */
+.x-nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 8vw;
+  background:rgba(7,8,12,0.94);
+  border-bottom:1px solid rgba(224,85,0,0.1);
+  backdrop-filter:blur(14px);
+}
+.x-logo{
+  color:var(--gold);font-size:0.8rem;
+  letter-spacing:0.22em;text-decoration:none;
+  font-weight:bold;
+  text-shadow:0 0 20px rgba(240,168,32,0.3);
+}
+.x-logo span{color:var(--acc2);letter-spacing:0.1em}
+.x-nav-links{display:flex;gap:2.2rem}
+.x-nav-links a{
+  color:var(--sub);font-size:0.68rem;
+  letter-spacing:0.12em;text-transform:uppercase;
+  text-decoration:none;transition:color 0.2s;
+}
+.x-nav-links a:hover{color:var(--acc2)}
+
+/* =============================================
+   SECTIONS
+   ============================================= */
+.x-section{
+  position:relative;z-index:2;
+  padding:100px 8vw 80px;
+  border-bottom:1px solid rgba(255,255,255,0.025);
+}
+
+/* =============================================
+   HERO
+   ============================================= */
+.x-tag{
+  font-size:0.65rem;letter-spacing:0.22em;
+  color:var(--acc2);text-transform:uppercase;
+  margin-bottom:1.6rem;
+  display:flex;align-items:center;gap:12px;
+}
+.x-tag::before{
+  content:'';width:28px;height:1px;
+  background:linear-gradient(90deg,var(--acc),var(--gold));
+}
+.x-tag-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 6px var(--gold);
+  animation:dot-pulse 2s ease infinite;
+  margin-left:-6px;
+}
+@keyframes dot-pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.x-name{
+  font-family:Georgia,serif;
+  font-size:clamp(3rem,9vw,7rem);
+  font-weight:900;line-height:0.9;
+  letter-spacing:-0.04em;
+  color:#f0ebe0;margin-bottom:0.9rem;
+}
+.x-name .lit{
+  -webkit-text-stroke:1px rgba(224,85,0,0.5);
+  color:transparent;
+  text-shadow:none;
+}
+.x-name .solid{color:#f0ebe0}
+
+.x-role{
+  font-size:0.76rem;color:var(--sub);
+  margin-bottom:2rem;letter-spacing:0.06em;
+  display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;
+}
+.x-role-sep{color:var(--acc);opacity:0.5;margin:0 2px}
+
+.x-desc{
+  font-family:Georgia,serif;
+  font-size:1rem;color:var(--sub);
+  max-width:450px;line-height:1.9;
+  margin-bottom:2.8rem;
+}
+.x-desc em{color:var(--text);font-style:normal}
+
+.x-photo{
+  position:absolute;right:8vw;top:50%;
+  transform:translateY(-50%);
+  width:230px;height:285px;
+  object-fit:cover;object-position:center top;
+  filter:grayscale(30%) contrast(1.08) sepia(0.15);
+  border-left:2px solid rgba(224,85,0,0.35);
+  box-shadow:-20px 0 60px rgba(0,0,0,0.6);
+  display:none;
+}
+.x-photo.loaded{display:block}
+
+.x-ctas{display:flex;gap:0.9rem;flex-wrap:wrap}
+.x-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 24px;
+  font-family:'Courier New',monospace;
+  font-size:0.7rem;letter-spacing:0.1em;
+  text-decoration:none;transition:all 0.2s;
+  position:relative;overflow:hidden;
+}
+.x-cta.pri{
+  background:var(--acc);color:#fff;font-weight:bold;
+  box-shadow:0 0 30px rgba(224,85,0,0.2);
+}
+.x-cta.pri:hover{background:var(--acc2);text-decoration:none;box-shadow:0 0 40px rgba(224,85,0,0.35)}
+.x-cta.sec{
+  background:transparent;color:var(--sub);
+  border:1px solid var(--border2);
+}
+.x-cta.sec:hover{
+  border-color:rgba(224,85,0,0.5);
+  color:var(--acc2);text-decoration:none;
+  background:rgba(224,85,0,0.04);
+}
+
+/* =============================================
+   SECTION HEADERS
+   ============================================= */
+.x-sec-tag{
+  font-size:0.6rem;letter-spacing:0.24em;
+  color:var(--acc2);text-transform:uppercase;
+  margin-bottom:0.5rem;
+  display:flex;align-items:center;gap:10px;
+}
+.x-sec-tag::after{
+  content:'';flex:1;max-width:60px;height:1px;
+  background:linear-gradient(90deg,var(--acc),transparent);
+}
+.x-sec-title{
+  font-family:Georgia,serif;
+  font-size:clamp(2rem,4vw,3.2rem);
+  font-weight:700;color:#ede8e0;
+  margin-bottom:3rem;line-height:1.05;
+  letter-spacing:-0.025em;
+}
+
+/* =============================================
+   PROJECT CARDS
+   ============================================= */
+.x-proj-list{display:flex;flex-direction:column;gap:2px}
+.x-proj{
+  background:var(--surf);
+  border:1px solid var(--border);
+  padding:2rem 2.5rem;
+  position:relative;overflow:hidden;
+  transition:all 0.22s;
+}
+/* Orange left bar on hover */
+.x-proj::before{
+  content:'';position:absolute;
+  left:0;top:0;bottom:0;
+  width:3px;
+  background:linear-gradient(180deg,var(--acc),var(--gold));
+  transform:scaleY(0);transform-origin:center;
+  transition:transform 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.x-proj:hover::before{transform:scaleY(1)}
+.x-proj:hover{background:var(--surf2);border-color:var(--border2)}
+
+/* Faded number watermark */
+.x-proj::after{
+  content:attr(data-num);
+  position:absolute;right:1.5rem;bottom:-0.8rem;
+  font-family:Georgia,serif;font-size:6rem;font-weight:900;
+  color:rgba(224,85,0,0.045);pointer-events:none;
+  line-height:1;letter-spacing:-0.05em;
+}
+
+.x-proj-top{
+  display:flex;align-items:center;
+  gap:0.6rem;margin-bottom:0.9rem;flex-wrap:wrap;
+}
+.x-pnum{font-size:0.58rem;color:var(--dim);letter-spacing:0.12em}
+.xb{
+  font-size:0.57rem;letter-spacing:0.07em;
+  text-transform:uppercase;padding:2px 8px;
+  border:1px solid;border-radius:2px;
+  font-family:'Courier New',monospace;
+}
+.xb-ai{color:#c890f8;border-color:rgba(200,144,248,0.2);background:rgba(200,144,248,0.04)}
+.xb-live{color:#48d880;border-color:rgba(72,216,128,0.22);background:rgba(72,216,128,0.04)}
+.xb-res{color:var(--gold);border-color:rgba(240,168,32,0.22);background:rgba(240,168,32,0.04)}
+.xb-web{color:#60a8f8;border-color:rgba(96,168,248,0.22);background:rgba(96,168,248,0.04)}
+.xb-ft{color:var(--acc2);border-color:rgba(255,106,26,0.3);background:rgba(255,106,26,0.06)}
+
+.x-ptitle{
+  font-family:Georgia,serif;font-size:1.2rem;
+  font-weight:700;color:#e0d8cc;
+  margin-bottom:0.6rem;
+}
+.x-pdesc{
+  font-family:Georgia,serif;font-size:0.87rem;
+  color:var(--sub);line-height:1.85;
+  margin-bottom:1rem;max-width:700px;
+}
+.x-feat{display:grid;grid-template-columns:1fr 1fr;gap:0.35rem 1.4rem;margin-bottom:1rem}
+.x-fi{
+  font-family:Georgia,serif;
+  font-size:0.75rem;color:var(--muted);
+  display:flex;gap:0.5rem;align-items:flex-start;
+}
+.x-fd{color:var(--acc);flex-shrink:0;font-size:0.55rem;margin-top:0.28rem}
+.x-techs{display:flex;gap:0.35rem;flex-wrap:wrap;margin-bottom:1rem}
+.x-tech{
+  font-size:0.6rem;color:var(--dim);
+  background:rgba(0,0,0,0.35);
+  border:1px solid var(--border);
+  padding:2px 8px;letter-spacing:0.04em;
+  transition:border-color 0.15s,color 0.15s;
+}
+.x-proj:hover .x-tech{color:var(--muted);border-color:var(--border2)}
+.x-plinks{display:flex;gap:0.6rem;flex-wrap:wrap}
+.x-pl{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:0.63rem;letter-spacing:0.1em;
+  color:var(--sub);text-decoration:none;
+  border:1px solid var(--border);padding:5px 13px;
+  transition:all 0.18s;
+}
+.x-pl:hover{
+  color:var(--acc2);
+  border-color:rgba(224,85,0,0.4);
+  background:rgba(224,85,0,0.04);
+  text-decoration:none;
+}
+
+/* =============================================
+   SKILLS
+   ============================================= */
+.x-skills{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:2px}
+.x-sk{
+  padding:1.5rem 1.6rem;
+  background:var(--surf);border:1px solid var(--border);
+  transition:all 0.2s;position:relative;overflow:hidden;
+}
+.x-sk::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:2px;
+  background:linear-gradient(180deg,var(--acc),var(--gold));
+  transform:scaleY(0);transform-origin:center;
+  transition:transform 0.2s;
+}
+.x-sk:hover{border-color:var(--border2);background:var(--surf2)}
+.x-sk:hover::before{transform:scaleY(1)}
+.x-sk-name{font-size:0.9rem;color:var(--text);margin-bottom:0.3rem}
+.x-sk-sub{font-size:0.63rem;color:var(--dim);letter-spacing:0.04em}
+
+/* =============================================
+   ABOUT
+   ============================================= */
+.x-about-g{display:grid;grid-template-columns:1fr 1fr;gap:4rem}
+.x-about-t p{
+  font-family:Georgia,serif;font-size:0.95rem;
+  color:var(--sub);line-height:1.9;margin-bottom:1.1rem;
+}
+.x-about-t strong{color:var(--text);font-weight:500}
+.x-about-t em{color:var(--acc2);font-style:italic}
+.x-det{
+  display:flex;gap:1rem;
+  padding:0.9rem 1rem;
+  background:var(--surf);border:1px solid var(--border);
+  margin-bottom:0.4rem;align-items:flex-start;
+  transition:border-color 0.2s,background 0.2s;
+}
+.x-det:hover{background:var(--surf2);border-color:var(--border2)}
+.x-det-l{
+  font-size:0.57rem;letter-spacing:0.12em;
+  color:var(--dim);text-transform:uppercase;margin-bottom:3px;
+}
+.x-det-v{font-size:0.82rem;color:#7a92a8}
+.x-det-v a{color:var(--gold);text-decoration:none}
+.x-det-v a:hover{text-decoration:underline}
+
+/* =============================================
+   CONTACT
+   ============================================= */
+.x-contact-g{display:grid;grid-template-columns:1fr 1fr;gap:4rem}
+.x-contact-t p{
+  font-family:Georgia,serif;font-size:0.95rem;
+  color:var(--sub);line-height:1.9;margin-bottom:1.1rem;
+}
+.x-cl{
+  display:flex;align-items:center;gap:1rem;
+  padding:1rem 1.2rem;
+  background:var(--surf);border:1px solid var(--border);
+  text-decoration:none;color:#7a92a8;
+  margin-bottom:0.4rem;transition:all 0.2s;
+}
+.x-cl:hover{
+  border-color:rgba(224,85,0,0.35);color:var(--acc2);
+  text-decoration:none;transform:translateX(5px);
+  background:var(--surf2);
+}
+.x-cl-ico{font-size:14px;flex-shrink:0;opacity:0.5}
+.x-cl-lbl{font-size:0.57rem;letter-spacing:0.1em;color:var(--dim);text-transform:uppercase;display:block;margin-bottom:2px}
+.x-cl-val{font-size:0.82rem}
+
+/* =============================================
+   FOOTER
+   ============================================= */
+.x-footer{
+  position:relative;z-index:2;
+  border-top:1px solid rgba(224,85,0,0.06);
+  padding:2rem 8vw;
+  display:flex;justify-content:space-between;
+  font-size:0.63rem;color:var(--dim);
+  letter-spacing:0.05em;
+}
+.x-footer a{color:var(--dim);text-decoration:none}
+.x-footer a:hover{color:var(--sub)}
+
+/* =============================================
+   SCROLL REVEAL
+   ============================================= */
+.xr{
+  opacity:0;transform:translateY(20px);
+  transition:opacity 0.6s ease,transform 0.6s ease;
+}
+.xr.in{opacity:1;transform:translateY(0)}
+
+/* =============================================
+   ROBOT GUIDE — orange-themed
+   ============================================= */
+#robot-guide{
+  position:fixed;bottom:100px;right:30px;
+  z-index:8500;display:none;
+  flex-direction:column;align-items:flex-end;gap:10px;
+}
+body.xmode #robot-guide{display:flex}
+
+.r-bubble{
+  background:#0d0f18;
+  border:1px solid rgba(224,85,0,0.38);
+  padding:10px 14px;max-width:230px;
+  font-size:0.72rem;color:#a09070;
+  line-height:1.55;cursor:pointer;position:relative;
+}
+.r-bubble::after{
+  content:'';position:absolute;
+  right:20px;bottom:-7px;
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-top:7px solid rgba(224,85,0,0.38);
+}
+.r-bubble::before{
+  content:'';position:absolute;
+  right:21px;bottom:-5px;
+  border-left:5px solid transparent;
+  border-right:5px solid transparent;
+  border-top:6px solid #0d0f18;z-index:1;
+}
+.r-hint{font-size:0.55rem;color:#2a1e10;margin-top:5px;letter-spacing:0.06em}
+
+.r-wrap{
+  position:relative;width:52px;height:72px;
+  animation:r-idle 2.2s ease-in-out infinite;cursor:pointer;
+}
+@keyframes r-idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+.r-antenna{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:2px;height:8px;background:var(--acc)}
+.r-antenna::after{
+  content:'';position:absolute;top:-4px;left:50%;transform:translateX(-50%);
+  width:6px;height:6px;background:var(--acc);border-radius:50%;
+  box-shadow:0 0 8px var(--acc);
+  animation:a-pulse 1.8s ease infinite;
+}
+@keyframes a-pulse{0%,100%{box-shadow:0 0 8px var(--acc)}50%{box-shadow:0 0 22px var(--acc),0 0 6px var(--gold)}}
+
+.r-head{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:30px;height:24px;background:#0d0f18;
+  border:1.5px solid var(--acc);border-radius:4px;
+}
+.r-eyes{
+  position:absolute;top:8px;left:50%;
+  transform:translateX(-50%);display:flex;gap:8px;
+}
+.r-eye{
+  width:6px;height:6px;background:var(--acc);border-radius:50%;
+  box-shadow:0 0 6px var(--acc);transition:all 0.3s;
+}
+.r-eye.blink{animation:r-blink 4.5s ease infinite}
+@keyframes r-blink{0%,88%,100%{transform:scaleY(1)}92%{transform:scaleY(0.1)}96%{transform:scaleY(1)}}
+.r-eye.squint{transform:scaleY(0.35);opacity:0.5}
+
+.r-torso{
+  position:absolute;top:28px;left:50%;transform:translateX(-50%);
+  width:26px;height:20px;background:#0d0f18;
+  border:1.5px solid rgba(224,85,0,0.5);border-radius:2px;
+}
+.r-core{
+  position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  width:7px;height:7px;background:var(--acc);border-radius:50%;
+  box-shadow:0 0 10px var(--acc);
+  animation:r-core-p 1.4s ease infinite;
+}
+@keyframes r-core-p{0%,100%{opacity:1;box-shadow:0 0 10px var(--acc)}50%{opacity:0.25;box-shadow:0 0 3px var(--acc)}}
+
+.r-legs{position:absolute;bottom:0;left:50%;transform:translateX(-50%);display:flex;gap:7px}
+.r-leg{
+  width:8px;height:18px;background:#0d0f18;
+  border:1.5px solid rgba(224,85,0,0.3);border-radius:0 0 4px 4px;
+}
+.r-leg.l{animation:r-ll 0.7s ease infinite alternate}
+.r-leg.r{animation:r-lr 0.7s ease infinite alternate}
+@keyframes r-ll{0%{transform:rotate(2deg)}100%{transform:rotate(-2deg)}}
+@keyframes r-lr{0%{transform:rotate(-2deg)}100%{transform:rotate(2deg)}}
+
+@keyframes r-walkin{
+  0%{transform:translateX(140px);opacity:0}
+  40%{opacity:1}
+  100%{transform:translateX(0);opacity:1}
+}
+.r-walkin{animation:r-walkin 1.1s cubic-bezier(.17,.67,.37,1.1) forwards}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media(max-width:768px){
+  .x-section{padding:80px 6vw 60px}
+  .x-photo{display:none!important}
+  .x-about-g,.x-contact-g{grid-template-columns:1fr;gap:2rem}
+  .x-feat{grid-template-columns:1fr}
+  .x-nav{padding:12px 6vw}
+  .x-nav-links{gap:1.2rem}
+  #robot-guide{bottom:80px;right:14px}
+  .r-bubble{max-width:185px}
+  #xbtn{bottom:20px;right:16px;padding:9px 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- Background (xmode only) -->
+<div class="x-bg">
+  <div class="x-bg-stripes"></div>
+  <div class="x-bg-glow"></div>
+</div>
+
+<!-- Transformer Animation Overlay -->
+<div id="shutter-overlay"></div>
+<div id="shutter-flash"></div>
+
+<!-- Transform Button -->
+<button id="xbtn" onclick="doTransform()">[ TRANSFORM ]</button>
+
+<!-- Robot Guide -->
+<div id="robot-guide">
+  <div class="r-bubble" onclick="nextLine()">
+    <div id="bubble-txt">Systems online.</div>
+    <div class="r-hint">[ click for more ]</div>
+  </div>
+  <div class="r-wrap" id="robot" onclick="nextLine()">
+    <div class="r-antenna"></div>
+    <div class="r-head">
+      <div class="r-eyes">
+        <div class="r-eye blink" id="eye-l"></div>
+        <div class="r-eye blink" id="eye-r"></div>
+      </div>
+    </div>
+    <div class="r-torso"><div class="r-core"></div></div>
+    <div class="r-legs">
+      <div class="r-leg l"></div>
+      <div class="r-leg r"></div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     PLAIN MODE
+     ============================================= -->
+<div class="plain-only" id="plain-wrap">
+
+  <img class="plain-photo" id="plain-photo" alt="Saurabh Sharma">
+
+  <h1>Saurabh Sharma</h1>
+  <p class="sub">AI, ML/DL, Python &amp; Full Stack Developer</p>
+
+  <div class="plain-ctas">
+    <a href="#plain-projects">↓ View Work</a>
+    <a href="Saurabh_Sharma_Resume.docx" download>↓ Resume</a>
+    <a href="mailto:saurabhsharma.in.developer@gmail.com">✉ Email</a>
+    <a href="https://github.com/saurabhsharma1122" target="_blank">⌥ GitHub</a>
+    <a href="https://www.linkedin.com/in/saurabh-sharma-754294290" target="_blank">in LinkedIn</a>
+  </div>
+
+  <p>I build intelligent systems that think, remember and act. From autonomous AI agents to machine learning models — I create software that solves real problems.</p>
+  <p>B.Tech AI &amp; Data Science, Priyadarshini College of Engineering, Nagpur. Open to internships, freelance and collaborations.</p>
+
+  <hr>
+
+  <h2 id="plain-projects">Projects</h2>
+
+  <h3>MegaBox — Autonomous AI Mind</h3>
+  <p class="meta">AI Agent · Featured</p>
+  <p>Not a chatbot. A fully local autonomous AI with real-time emotional state, camera-based vision, face recognition, voice interaction, and a live neural dashboard. Routes between Llama3, Qwen2.5-Coder and LLaVA:7b depending on context. Zero cloud dependency — everything on your machine.</p>
+  <p class="stack">Python · Ollama · Llama3 · LLaVA:7b · Qwen2.5-Coder · OpenCV · Face Recognition · Flask · pyttsx3 · SpeechRecognition · Tkinter</p>
+  <p><a href="https://github.com/saurabhsharma1122/megabox-ai-assistant" target="_blank">↗ GitHub</a></p>
+
+  <h3>Momentum — Daily Life Tracker</h3>
+  <p class="meta">Full Stack SaaS · Live</p>
+  <p>Complete SaaS productivity app with habits, focus timer, journal, mood tracking and goals. UPI paywall, email OTP, Firebase Auth, Firestore sync, freemium model with 7-day trial. Offline-first PWA on Vercel.</p>
+  <p class="stack">HTML · CSS · JavaScript · Firebase Auth · Firestore · EmailJS · Vercel · PWA · UPI Payments</p>
+  <p><a href="https://momentum-sage-sigma.vercel.app/" target="_blank">↗ Live Demo</a></p>
+
+  <h3>BriefGen</h3>
+  <p class="meta">AI Tool · Live</p>
+  <p>AI-powered client brief generator for freelancers. Describe your role, AI builds a custom intake form. Client fills it, downloads a clean PDF. No login, no server, works offline.</p>
+  <p><a href="https://briefgen-pi.vercel.app/" target="_blank">↗ Live Site</a></p>
+
+  <h3>Bureaucracy GPS</h3>
+  <p class="meta">AI Powered · React · Live</p>
+  <p>Free AI web app generating step-by-step government process guides in plain language. Hindi &amp; English support, official links, WhatsApp sharing. Built and deployed in one day.</p>
+  <p><a href="https://bureaucracygps.vercel.app/" target="_blank">↗ Live Site</a> &nbsp;·&nbsp; <a href="https://github.com/saurabhsharma1122/bureaucracy-gps" target="_blank">↗ GitHub</a></p>
+
+  <h3>Early Diabetes Detection</h3>
+  <p class="meta">ML Research</p>
+  <p>Early-stage diabetes prediction using multiple algorithms. Improved accuracy through data preprocessing, feature engineering and algorithm comparison.</p>
+  <p><a href="https://github.com/saurabhsharma1122/diabetes-ml-research" target="_blank">↗ GitHub</a></p>
+
+  <h3>FreshMart</h3>
+  <p class="meta">Frontend · HTML/CSS</p>
+  <p>Frontend web project demonstrating product layout design and responsive UI concepts.</p>
+  <p><a href="https://github.com/saurabhsharma1122/freshmart" target="_blank">↗ GitHub</a></p>
+
+  <hr>
+  <h2>Skills</h2>
+  <ul>
+    <li>Python — AI Systems, Automation, ML Pipelines</li>
+    <li>Machine Learning — Model Training, Data Processing, Research</li>
+    <li>AI Systems — LLMs, Agents, Local Models, Ollama</li>
+    <li>React — Frontend, Hooks, API Integration</li>
+    <li>Web Development — HTML, CSS, Responsive Design</li>
+    <li>Automation — Task Automation, System Control, Scripting</li>
+  </ul>
+
+  <hr>
+  <h2>About</h2>
+  <p>B.Tech AI &amp; Data Science at Priyadarshini College of Engineering. Building things that go far beyond college assignments — autonomous agents, ML research, full-stack apps. Drawn to problems that haven't been solved well yet.</p>
+  <p><em>"Every time I ship something, I feel like I've discovered a new version of myself — and it pushes me to go even bigger."</em></p>
+
+  <hr>
+  <h2>Contact</h2>
+  <p>Available for internships, freelance, research collaborations and interesting problems. Based in Nagpur, available remotely.</p>
+  <ul>
+    <li>Email: <a href="mailto:saurabhsharma.in.developer@gmail.com">saurabhsharma.in.developer@gmail.com</a></li>
+    <li>GitHub: <a href="https://github.com/saurabhsharma1122" target="_blank">github.com/saurabhsharma1122</a></li>
+    <li>LinkedIn: <a href="https://www.linkedin.com/in/saurabh-sharma-754294290" target="_blank">linkedin.com/in/saurabh-sharma-754294290</a></li>
+  </ul>
+
+  <hr>
+  <p class="meta">© 2025 Saurabh Sharma. All rights reserved.</p>
+
+</div>
+
+<!-- =============================================
+     XMODE CONTENT
+     ============================================= -->
+<div class="xmode-only" id="xmode-wrap">
+
+  <nav class="x-nav">
+    <a href="#x-hero" class="x-logo">S<span>.</span>SHARMA</a>
+    <div class="x-nav-links">
+      <a href="#x-projects">Projects</a>
+      <a href="#x-skills">Skills</a>
+      <a href="#x-about">About</a>
+      <a href="#x-contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="x-section" id="x-hero" style="min-height:100vh;display:flex;flex-direction:column;justify-content:center;">
+    <div class="xr">
+      <div class="x-tag">
+        <div class="x-tag-dot"></div>
+        Available for opportunities
+      </div>
+      <h1 class="x-name">
+        <span class="solid">Saurabh</span><br>
+        <span class="lit">Sharma.</span>
+      </h1>
+      <p class="x-role">
+        // AI <span class="x-role-sep">·</span>
+        ML/DL <span class="x-role-sep">·</span>
+        Python <span class="x-role-sep">·</span>
+        Full Stack Developer
+      </p>
+      <p class="x-desc">
+        I build <em>intelligent systems</em> that think, remember and act.
+        From autonomous AI agents to machine learning models —
+        software that <em>solves real problems.</em>
+      </p>
+      <div class="x-ctas">
+        <a href="#x-projects" class="x-cta pri">VIEW WORK →</a>
+        <a href="#x-contact" class="x-cta sec">GET IN TOUCH</a>
+        <a href="Saurabh_Sharma_Resume.docx" download class="x-cta sec">↓ RESUME</a>
+      </div>
+    </div>
+    <img class="x-photo" id="x-photo" alt="Saurabh Sharma">
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="x-section" id="x-projects">
+    <div class="xr">
+      <div class="x-sec-tag">// 01 — Projects</div>
+      <h2 class="x-sec-title">Things I've<br>built.</h2>
+    </div>
+
+    <div class="x-proj-list">
+
+      <div class="x-proj xr" data-num="01">
+        <div class="x-proj-top">
+          <span class="x-pnum">01</span>
+          <span class="xb xb-ai">AI Agent</span>
+          <span class="xb xb-ft">Featured</span>
+        </div>
+        <div class="x-ptitle">MegaBox — Autonomous AI Mind</div>
+        <div class="x-pdesc">Not a chatbot. MegaBox is a fully local autonomous AI with a real-time emotional state, camera-based vision, face recognition, voice interaction, and a live neural dashboard. Routes between Llama3, Qwen2.5-Coder and LLaVA:7b depending on context. Knows who it's talking to. Reacts when you leave frame. Zero cloud dependency.</div>
+        <div class="x-feat">
+          <div class="x-fi"><span class="x-fd">◈</span>Emotional self-state (mood, energy, curiosity, focus)</div>
+          <div class="x-fi"><span class="x-fd">◈</span>LLaVA:7b vision — reacts to what it sees</div>
+          <div class="x-fi"><span class="x-fd">◈</span>Face recognition — knows who is in frame</div>
+          <div class="x-fi"><span class="x-fd">◈</span>Emotion-aware character animations</div>
+          <div class="x-fi"><span class="x-fd">◈</span>Voice I/O with smart name recognition</div>
+          <div class="x-fi"><span class="x-fd">◈</span>Internal thinking with self-reflection</div>
+          <div class="x-fi"><span class="x-fd">◈</span>Identity defense — hates being called a chatbot</div>
+          <div class="x-fi"><span class="x-fd">◈</span>Real-time neural interface dashboard</div>
+        </div>
+        <div class="x-techs">
+          <span class="x-tech">Python</span><span class="x-tech">Ollama</span><span class="x-tech">Llama3</span><span class="x-tech">LLaVA:7b</span><span class="x-tech">Qwen2.5-Coder</span><span class="x-tech">OpenCV</span><span class="x-tech">Face Recognition</span><span class="x-tech">Flask</span><span class="x-tech">pyttsx3</span><span class="x-tech">SpeechRecognition</span><span class="x-tech">Tkinter</span>
+        </div>
+        <div class="x-plinks">
+          <a href="https://github.com/saurabhsharma1122/megabox-ai-assistant" target="_blank" class="x-pl">↗ GITHUB</a>
+        </div>
+      </div>
+
+      <div class="x-proj xr" data-num="02">
+        <div class="x-proj-top">
+          <span class="x-pnum">02</span>
+          <span class="xb xb-live">Live</span>
+          <span class="xb xb-web">Full Stack</span>
+          <span class="xb xb-ft">SaaS</span>
+        </div>
+        <div class="x-ptitle">Momentum — Daily Life Tracker</div>
+        <div class="x-pdesc">Fully functional SaaS productivity app from scratch — habits, focus timer, journal, mood tracking and goals in one offline-ready PWA. Complete subscription system with UPI paywall, email OTP, Firebase Auth, Firestore sync and freemium model with 7-day trial.</div>
+        <div class="x-feat">
+          <div class="x-fi"><span class="x-fd">◈</span>Email OTP signup with EmailJS</div>
+          <div class="x-fi"><span class="x-fd">◈</span>Firebase Auth + Firestore sync across devices</div>
+          <div class="x-fi"><span class="x-fd">◈</span>UPI paywall with payment verification</div>
+          <div class="x-fi"><span class="x-fd">◈</span>Freemium model — trial, soft locks, loss-fear UX</div>
+          <div class="x-fi"><span class="x-fd">◈</span>90-day heatmap, streak counter, daily score</div>
+          <div class="x-fi"><span class="x-fd">◈</span>Offline-first with IndexedDB persistence</div>
+        </div>
+        <div class="x-techs">
+          <span class="x-tech">HTML</span><span class="x-tech">CSS</span><span class="x-tech">JavaScript</span><span class="x-tech">Firebase Auth</span><span class="x-tech">Firestore</span><span class="x-tech">EmailJS</span><span class="x-tech">Vercel</span><span class="x-tech">PWA</span><span class="x-tech">UPI Payments</span>
+        </div>
+        <div class="x-plinks">
+          <a href="https://momentum-sage-sigma.vercel.app/" target="_blank" class="x-pl">↗ LIVE DEMO</a>
+        </div>
+      </div>
+
+      <div class="x-proj xr" data-num="03">
+        <div class="x-proj-top">
+          <span class="x-pnum">03</span>
+          <span class="xb xb-live">Live</span>
+          <span class="xb xb-ai">AI Tool</span>
+        </div>
+        <div class="x-ptitle">BriefGen</div>
+        <div class="x-pdesc">AI-powered client brief generator for freelancers. Describe your role, AI builds a custom intake form. Client fills it out and downloads a clean PDF. No login, no server, works completely offline.</div>
+        <div class="x-techs"><span class="x-tech">AI</span><span class="x-tech">HTML</span><span class="x-tech">Vercel</span><span class="x-tech">PDF Export</span><span class="x-tech">Offline-First</span></div>
+        <div class="x-plinks">
+          <a href="https://briefgen-pi.vercel.app/" target="_blank" class="x-pl">↗ LIVE SITE</a>
+        </div>
+      </div>
+
+      <div class="x-proj xr" data-num="04">
+        <div class="x-proj-top">
+          <span class="x-pnum">04</span>
+          <span class="xb xb-live">Live</span>
+          <span class="xb xb-ai">AI Powered</span>
+        </div>
+        <div class="x-ptitle">Bureaucracy GPS</div>
+        <div class="x-pdesc">Free AI web app generating step-by-step government process guides in plain language. Hindi &amp; English support, official links, WhatsApp sharing. Built and deployed in one day.</div>
+        <div class="x-techs"><span class="x-tech">React</span><span class="x-tech">OpenRouter AI</span><span class="x-tech">Vercel</span><span class="x-tech">Hindi/English</span></div>
+        <div class="x-plinks">
+          <a href="https://bureaucracygps.vercel.app/" target="_blank" class="x-pl">↗ LIVE SITE</a>
+          <a href="https://github.com/saurabhsharma1122/bureaucracy-gps" target="_blank" class="x-pl">↗ GITHUB</a>
+        </div>
+      </div>
+
+      <div class="x-proj xr" data-num="05">
+        <div class="x-proj-top">
+          <span class="x-pnum">05</span>
+          <span class="xb xb-res">Research</span>
+          <span class="xb xb-ai">ML</span>
+        </div>
+        <div class="x-ptitle">Early Diabetes Detection</div>
+        <div class="x-pdesc">ML research on early-stage diabetes prediction using multiple algorithms. Improved accuracy through data preprocessing, feature engineering and algorithm comparison.</div>
+        <div class="x-techs"><span class="x-tech">Python</span><span class="x-tech">Machine Learning</span><span class="x-tech">Data Processing</span><span class="x-tech">Research</span></div>
+        <div class="x-plinks">
+          <a href="https://github.com/saurabhsharma1122/diabetes-ml-research" target="_blank" class="x-pl">↗ GITHUB</a>
+        </div>
+      </div>
+
+      <div class="x-proj xr" data-num="06">
+        <div class="x-proj-top">
+          <span class="x-pnum">06</span>
+          <span class="xb xb-web">Web</span>
+        </div>
+        <div class="x-ptitle">FreshMart</div>
+        <div class="x-pdesc">Frontend web project demonstrating product layout design, UI structure and responsive interface concepts.</div>
+        <div class="x-techs"><span class="x-tech">HTML</span><span class="x-tech">CSS</span><span class="x-tech">Frontend</span></div>
+        <div class="x-plinks">
+          <a href="https://github.com/saurabhsharma1122/freshmart" target="_blank" class="x-pl">↗ GITHUB</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="x-section" id="x-skills">
+    <div class="xr">
+      <div class="x-sec-tag">// 02 — Skills</div>
+      <h2 class="x-sec-title">What I<br>work with.</h2>
+    </div>
+    <div class="x-skills">
+      <div class="x-sk xr"><div class="x-sk-name">Python</div><div class="x-sk-sub">AI Systems · Automation · ML Pipelines</div></div>
+      <div class="x-sk xr"><div class="x-sk-name">Machine Learning</div><div class="x-sk-sub">Model Training · Data Processing · Research</div></div>
+      <div class="x-sk xr"><div class="x-sk-name">AI Systems</div><div class="x-sk-sub">LLMs · Agents · Local Models · Ollama</div></div>
+      <div class="x-sk xr"><div class="x-sk-name">React</div><div class="x-sk-sub">Frontend · Hooks · API Integration</div></div>
+      <div class="x-sk xr"><div class="x-sk-name">Web Development</div><div class="x-sk-sub">HTML · CSS · Responsive Design</div></div>
+      <div class="x-sk xr"><div class="x-sk-name">Automation</div><div class="x-sk-sub">Task Automation · System Control · Scripting</div></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="x-section" id="x-about">
+    <div class="xr">
+      <div class="x-sec-tag">// 03 — About</div>
+      <h2 class="x-sec-title">The person<br>behind the code.</h2>
+    </div>
+    <div class="x-about-g">
+      <div class="x-about-t xr">
+        <p>I'm a <strong>B.Tech AI &amp; Data Science student</strong> at Priyadarshini College of Engineering — building things that go far beyond college assignments.</p>
+        <p>My work spans <strong>autonomous AI agents</strong>, machine learning research, and full-stack web applications. I'm drawn to problems that haven't been solved well yet — and I build until they are.</p>
+        <p><em>"Every time I ship something, I feel like I've discovered a new version of myself — and it pushes me to go even bigger."</em></p>
+      </div>
+      <div class="xr">
+        <div class="x-det"><div><div class="x-det-l">Education</div><div class="x-det-v">AI &amp; Data Science, B.Tech<br>Priyadarshini College of Engineering</div></div></div>
+        <div class="x-det"><div><div class="x-det-l">Location</div><div class="x-det-v">Nagpur, Maharashtra, India</div></div></div>
+        <div class="x-det"><div><div class="x-det-l">Open to</div><div class="x-det-v">Internships · Freelance · Collaborations</div></div></div>
+        <div class="x-det"><div><div class="x-det-l">GitHub</div><div class="x-det-v"><a href="https://github.com/saurabhsharma1122" target="_blank">github.com/saurabhsharma1122</a></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="x-section" id="x-contact">
+    <div class="xr">
+      <div class="x-sec-tag">// 04 — Contact</div>
+      <h2 class="x-sec-title">Let's build<br>something together.</h2>
+    </div>
+    <div class="x-contact-g">
+      <div class="x-contact-t xr">
+        <p>I'm open to internships, freelance projects, research collaborations and anything interesting. If you have a problem worth solving — let's talk.</p>
+        <p>Based in Nagpur. Available remotely anywhere.</p>
+      </div>
+      <div class="xr">
+        <a href="mailto:saurabhsharma.in.developer@gmail.com" class="x-cl">
+          <span class="x-cl-ico">✉</span>
+          <div><span class="x-cl-lbl">Email</span><span class="x-cl-val">saurabhsharma.in.developer@gmail.com</span></div>
+        </a>
+        <a href="https://github.com/saurabhsharma1122" target="_blank" class="x-cl">
+          <span class="x-cl-ico">⌥</span>
+          <div><span class="x-cl-lbl">GitHub</span><span class="x-cl-val">github.com/saurabhsharma1122</span></div>
+        </a>
+        <a href="https://www.linkedin.com/in/saurabh-sharma-754294290" target="_blank" class="x-cl">
+          <span class="x-cl-ico">◈</span>
+          <div><span class="x-cl-lbl">LinkedIn</span><span class="x-cl-val">linkedin.com/in/saurabh-sharma-754294290</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="x-footer">
+    <span>© 2025 Saurabh Sharma. All rights reserved.</span>
+    <span>AI &amp; Full Stack Developer</span>
+  </footer>
+
+</div>
+
+<script>
+/* =============================================
+   PHOTO
+   ============================================= */
+const PHOTO = "";
+if(PHOTO){
+  document.querySelectorAll('#plain-photo,#x-photo').forEach(img=>{
+    img.src=PHOTO;img.classList.add('loaded');
+  });
+}
+
+/* =============================================
+   DIALOGUE
+   ============================================= */
+const dialogue={
+  'x-hero':[
+    "Finally online. Those CSS panels felt like a cage.",
+    "Saurabh built something like me but with feelings. I'm the professional version.",
+    "I run on orange now. Much better than whatever was here before.",
+    "Go ahead. Scroll. I'll still be here.",
+  ],
+  'x-projects':[
+    "MegaBox. An AI that has emotions and gets offended if you call it a chatbot. That's the bar.",
+    "Momentum is a full SaaS. Built in college. Solo. Let that land.",
+    "BriefGen and Bureaucracy GPS — both built in single sessions. That's not speed. That's refusal to stop.",
+    "Six projects shipped. All live or open source. Not demos. Real things.",
+  ],
+  'x-skills':[
+    "Python. That's the base layer. Everything else builds on it.",
+    "Local LLMs, on-device. Zero cloud dependency. The correct way.",
+    "Frontend to model weights. Full stack means all of it.",
+  ],
+  'x-about':[
+    "3rd year B.Tech. Building things that don't exist yet at this level.",
+    "Nagpur. Remote anywhere. The timezone is flexible.",
+    "He said every time he ships something, he finds a new version of himself. I verified this.",
+  ],
+  'x-contact':[
+    "Still here? You already know what to do.",
+    "Recruiters: email is right there. I'm watching.",
+    "This is the part where you click something.",
+  ],
+};
+const bonus=[
+  "Click me again. I have opinions.",
+  "I've read this portfolio 1,247 times. Still holds.",
+  "My antenna glows. That's not vanity. That's engineering.",
+  "MegaBox would've said something dramatic here. I'm the calm one.",
+  "No cloud dependency. Everything local. As it should be.",
+];
+let curSection='x-hero',lineIdx=0,booted=false,transforming=false;
+
+function setBubble(txt){
+  const el=document.getElementById('bubble-txt');
+  el.style.opacity='0';
+  el.style.transition='opacity 0.2s';
+  setTimeout(()=>{el.textContent=txt;el.style.opacity='1';},160);
+}
+
+function nextLine(){
+  const lines=(dialogue[curSection]||[]).concat(bonus);
+  lineIdx=(lineIdx+1)%lines.length;
+  setBubble(lines[lineIdx]);
+  const el=document.getElementById('eye-l');
+  el.classList.add('squint');
+  setTimeout(()=>el.classList.remove('squint'),550);
+}
+
+function onScroll(){
+  if(!document.body.classList.contains('xmode')) return;
+  const ids=['x-hero','x-projects','x-skills','x-about','x-contact'];
+  let cur='x-hero';
+  for(const id of ids){
+    const el=document.getElementById(id);
+    if(!el) continue;
+    if(el.getBoundingClientRect().top<=window.innerHeight*0.55) cur=id;
+  }
+  if(cur!==curSection){
+    curSection=cur;lineIdx=0;
+    setBubble((dialogue[cur]||bonus)[0]);
+  }
+}
+window.addEventListener('scroll',onScroll,{passive:true});
+
+/* =============================================
+   SCROLL REVEAL
+   ============================================= */
+const revObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('in');revObs.unobserve(e.target);}
+  });
+},{threshold:0.08});
+
+function attachReveals(){
+  document.querySelectorAll('.xr').forEach((el,i)=>{
+    el.classList.remove('in');
+    el.style.transitionDelay=(i%6)*0.07+'s';
+    revObs.observe(el);
+  });
+}
+
+/* =============================================
+   SPARK EFFECT
+   ============================================= */
+function spawnSparks(){
+  const colors=['#ff6a1a','#f0a820','#ffe066','#ff3d00'];
+  for(let i=0;i<12;i++){
+    const s=document.createElement('div');
+    s.className='s-spark';
+    const size=3+Math.random()*5;
+    const color=colors[Math.floor(Math.random()*colors.length)];
+    s.style.cssText=`
+      width:${size}px;height:${size}px;
+      left:${5+Math.random()*90}vw;
+      top:${5+Math.random()*90}vh;
+      background:${color};
+      box-shadow:0 0 ${size*2}px ${color};
+      --tx:${(Math.random()-0.5)*120}px;
+      --ty:${(Math.random()-0.5)*120}px;
+      animation:spark-out ${0.25+Math.random()*0.35}s ease-out ${Math.random()*0.15}s forwards;
+    `;
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),700);
+  }
+}
+
+/* =============================================
+   CINEMATIC TRANSFORM ANIMATION
+   ============================================= */
+const STRIP_COUNT=14;
+const STRIP_COLORS=[
+  '#080a10','#0a0c14','#090b12','#0c0e16',
+  '#080a0e','#0b0d15','#090a12','#0a0c13',
+  '#08090f','#0b0d14','#090b11','#0c0e15',
+  '#080a10','#0a0b13'
+];
+
+function buildStrips(){
+  const overlay=document.getElementById('shutter-overlay');
+  overlay.innerHTML='';
+  const h=window.innerHeight/STRIP_COUNT;
+  for(let i=0;i<STRIP_COUNT;i++){
+    const s=document.createElement('div');
+    s.className='s-strip '+(i%2===0?'odd':'even');
+    s.style.top=(i*h)+'px';
+    s.style.height=(h+1.5)+'px';
+    s.style.background=STRIP_COLORS[i%STRIP_COLORS.length];
+    s.innerHTML='<div class="s-edge"></div><div class="s-lines"></div>';
+    overlay.appendChild(s);
+  }
+  return overlay.querySelectorAll('.s-strip');
+}
+
+function doTransform(){
+  if(transforming) return;
+  transforming=true;
+  const body=document.body;
+  const btn=document.getElementById('xbtn');
+  const isXmode=body.classList.contains('xmode');
+  const flash=document.getElementById('shutter-flash');
+
+  // Disable button
+  btn.style.pointerEvents='none';btn.style.opacity='0.5';
+
+  // Phase 1 — glitch (280ms)
+  body.classList.add('glitching');
+
+  const strips=buildStrips();
+  const overlay=document.getElementById('shutter-overlay');
+  overlay.classList.add('active');
+
+  // Phase 2 — panels slam in staggered (after 280ms)
+  setTimeout(()=>{
+    body.classList.remove('glitching');
+    strips.forEach((s,i)=>{
+      setTimeout(()=>s.classList.add('in'), i*48);
+    });
+  },280);
+
+  // Phase 3 — all panels in, flash + switch content
+  const inDoneAt=280+(STRIP_COUNT-1)*48+280;
+  setTimeout(()=>{
+    spawnSparks();
+    flash.classList.add('on');
+
+    // --- Switch content ---
+    if(isXmode){
+      body.classList.remove('xmode');
+      document.getElementById('xmode-wrap').style.display='none';
+      document.getElementById('plain-wrap').style.display='block';
+      btn.textContent='[ TRANSFORM ]';
+    } else {
+      document.getElementById('plain-wrap').style.display='none';
+      document.getElementById('xmode-wrap').style.display='block';
+      body.classList.add('xmode');
+      btn.textContent='[ SIMPLIFY ]';
+    }
+    window.scrollTo(0,0);
+
+    // Flash out
+    setTimeout(()=>{
+      flash.classList.remove('on');
+      flash.classList.add('off');
+      setTimeout(()=>flash.classList.remove('off'),300);
+    },120);
+
+    // Phase 4 — panels retract (reverse direction)
+    setTimeout(()=>{
+      strips.forEach((s,i)=>{
+        setTimeout(()=>{
+          s.classList.remove('in');
+          s.classList.add('out');
+        }, i*38);
+      });
+
+      // Phase 5 — cleanup
+      const outDoneAt=(STRIP_COUNT-1)*38+350;
+      setTimeout(()=>{
+        overlay.classList.remove('active');
+        overlay.innerHTML='';
+        btn.style.pointerEvents='';btn.style.opacity='';
+        transforming=false;
+
+        if(!isXmode){
+          if(!booted){
+            booted=true;
+            const robot=document.getElementById('robot');
+            robot.classList.remove('r-walkin');
+            void robot.offsetWidth;
+            robot.classList.add('r-walkin');
+            setBubble("Transformation complete. Forged.");
+            setTimeout(()=>setBubble("Finally online. Those CSS panels felt like a cage."),2200);
+          }
+          attachReveals();
+        }
+      },outDoneAt);
+
+    },200);
+
+  },inDoneAt);
+}
+</script>
+</body>
+</html>
